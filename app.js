@@ -15,4 +15,3 @@ app.listen(PORT, () => {
   console.log(BASE_PATH);
 });
 
-app.listen(3000);
