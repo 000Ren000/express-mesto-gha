@@ -27,8 +27,8 @@ module.exports.createUser = async (req, res) => {
 
 module.exports.updateProfile = async (req, res) => {
 	try {
-		const { name, about, avatar } = req.body; // получим из объекта запроса имя и описание пользователя
-		const newUser = await User.create({ name, about, avatar });
+		const { name, about } = req.body; // получим из объекта запроса имя и описание пользователя
+		const newUser = await User.findByIdAndUpdate(req.user._id,{ name, about });
 		await res.send(200, newUser);
 	}
 	catch (err) {res.status(500).json({message:'Не получилось cоздать пользователя'})}
@@ -36,8 +36,8 @@ module.exports.updateProfile = async (req, res) => {
 
 module.exports.updateAvatar = async (req, res) => {
 	try {
-		const { name, about, avatar } = req.body; // получим из объекта запроса имя и описание пользователя
-		const newUser = await User.create({ name, about, avatar });
+		const { avatar} = req.body; // получим из объекта запроса имя и описание пользователя
+		const newUser = await User.findByIdAndUpdate(req.user._id,{ avatar });
 		await res.send(200, newUser);
 	}
 	catch (err) {res.status(500).json({message:'Не получилось cоздать пользователя'})}

@@ -31,3 +31,25 @@ try {
 	await res.send(200, {message: "Карточка удалена!"})
 }catch (err) {res.status(500).json({message:'Не получилось удалить карточку'})}
 }
+
+module.exports.likeCard = async (req, res) => {
+	try {
+		const newCard = await Card.findByIdAndUpdate(
+				req.params.cardId,
+				{ $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
+				{ new: true },
+		)
+		await res.send(200, newCard);
+	}catch (err) {res.status(500).json({message:'Не получилось поставить лайк'})}
+}
+
+module.exports.dislikeCard = async (req, res) => {
+	try {
+		const newCard = await Card.findByIdAndUpdate(
+				req.params.cardId,
+				{ $pull: { likes: req.user._id } },
+				{ new: true },
+		);
+		await res.send(200, newCard);
+	}catch (err) {res.status(500).json({message:'Не получилось удалить лайк'})}
+}

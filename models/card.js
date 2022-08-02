@@ -4,7 +4,7 @@ const cardSchema = mongoose.Schema({
 	name: { type:String, minLength:2, maxLength:30, require },
 	link: {type:String, require},
 	owner: {type: mongoose.Types.ObjectId, require},
-	links: [{default: []}],
+	likes: [],
 	createdAt: {type: Date, default: Date.now()}
 })
 
