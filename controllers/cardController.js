@@ -1,4 +1,5 @@
 const Card = require('../models/card');
+
 const sendErrorMessage = (err, res) => {
 	if (err.name === 'CastError')
 		return res.status(404).send({message: 'Запрашиваемая карточка не найдена'});
