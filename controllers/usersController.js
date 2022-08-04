@@ -41,7 +41,7 @@ module.exports.createUser = async (req, res) => {
 module.exports.updateProfile = async (req, res) => {
 	try {
 		const {name, about} = req.body; // получим из объекта запроса имя и описание пользователя
-		const newUser = await User.findByIdAndUpdate(req.user._id, {name, about});
+		const newUser = await User.findByIdAndUpdate(req.user._id, {name, about}, {new: true});
 		await res.send(newUser);
 	} catch (err) {sendErrorMessage(err, res)}
 }
@@ -49,7 +49,7 @@ module.exports.updateProfile = async (req, res) => {
 module.exports.updateAvatar = async (req, res) => {
 	try {
 		const {avatar} = req.body; // получим из объекта запроса имя и описание пользователя
-		const newUser = await User.findByIdAndUpdate(req.user._id, {avatar});
+		const newUser = await User.findByIdAndUpdate(req.user._id, {avatar}, {new: true});
 		await res.send(newUser);
 	} catch (err) {sendErrorMessage(err, res)}
 }
