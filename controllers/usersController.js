@@ -34,7 +34,7 @@ module.exports.createUser = async (req, res) => {
 	try {
 		const {name, about, avatar} = req.body; // получим из объекта запроса имя и описание пользователя
 		const newUser = await User.create({name, about, avatar});
-		await res.send(newUser);
+		await res.status(201).send(newUser);
 	} catch (err) {sendErrorMessage(err, res)}
 }
 
