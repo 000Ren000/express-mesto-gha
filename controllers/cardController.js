@@ -1,9 +1,9 @@
 const Card = require('../models/card');
-const {sendErrorMessage} = require('../utils/utils')
+const {sendErrorMessage, NOTFOUND_ERROR} = require('../utils/utils')
 
 const cardVerification = async (req, res) => {
   if (!await Card.exists({_id: req.params.cardId})) {
-    res.status(404).send({message: "Карточка не найдена"});
+    res.status(NOTFOUND_ERROR).send({message: "Карточка не найдена"});
     return true;
   }
   else  return false;

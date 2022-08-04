@@ -1,9 +1,9 @@
 const User = require('../models/user');
 const Card = require('../models/card');
-const {sendErrorMessage} = require('../utils/utils');
+const {sendErrorMessage, NOTFOUND_ERROR} = require('../utils/utils');
 const userVerification = async (req, res) => {
   if (!await Card.exists({_id: req.params.cardId})) {
-    res.status(404).send({message: "Запрашиваемый пользователь не найден"});
+    res.status(NOTFOUND_ERROR).send({message: "Запрашиваемый пользователь не найден"});
     return true;
   }
   else  return false;
@@ -21,7 +21,7 @@ module.exports.getUser = async (req, res) => {
   const _id = req.params.userId;
 	try {
     if (!await User.exists({_id})) {
-      res.status(404).send({message: "Запрашиваемый пользователь не найден"});
+      res.status(NOTFOUND_ERROR).send({message: "Запрашиваемый пользователь не найден"});
       return;
     }
 		const user = await User.find({_id})

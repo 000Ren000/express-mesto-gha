@@ -1,11 +1,17 @@
 module.exports.sendErrorMessage = (err, res) => {
-  if (err.name === 'ValidationError') return res.status(400).send({message: 'Не правильно введены данные'});
-  return res.status(500).send({message: `Внутренняя ошибка сервера`});
+  if (err.name === 'ValidationError') return res.status(ERROR_CODE).send({message: 'Не правильно введены данные'});
+  return res.status(SERVER_ERROR).send({message: `Внутренняя ошибка сервера`});
 }
 
+const ERROR_CODE = 400;
+const NOTFOUND_ERROR = 404;
+const SERVER_ERROR = 500;
 
-
-
+module.exports = {
+  ERROR_CODE,
+  NOTFOUND_ERROR,
+  SERVER_ERROR
+};
 
 
 
