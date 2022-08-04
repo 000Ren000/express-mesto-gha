@@ -1,13 +1,5 @@
 const Card = require('../models/card');
-
-const sendErrorMessage = (err, res) => {
-	if (err.name === 'CastError')
-		return res.status(404).send({message: 'Запрашиваемая карточка не найдена'});
-	if (err.name === 'ValidationError')
-		return res.status(400).send({message: 'Не правильно введены данные'});
-	return res.status(500).send({message: `Внутренняя ошибка сервера`});
-}
-
+const {sendErrorMessage} = require('../utils/utils')
 //Методы работы с карточками
 
 // GET /cards — возвращает все карточки
@@ -25,7 +17,7 @@ module.exports.createCard = async (req, res) => {
 	try {
 		const {name, link} = req.body;
 		const newCard = await Card.create({name, link, owner: req.user._id});
-		await res.send(200, newCard);
+		await res.send(201, newCard);
 	} catch (err) {
 		sendErrorMessage(err, res)
 	}
