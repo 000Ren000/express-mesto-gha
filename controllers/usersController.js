@@ -1,11 +1,14 @@
 const User = require('../models/user');
-const sendErrorMessage = (err, res) => {
-	if (err.name === 'CastError')
-		return res.status(400).send({message: 'Запрашиваемый пользователь не найден.'});
-	if (err.name === 'ValidationError')
-		return res.status(404).send({message: 'Не правильно введены данные'});
-	return res.status(500).send({message: `Внутренняя ошибка сервера`});
+const Card = require('../models/card');
+const {sendErrorMessage} = require('../utils/utils');
+const userVerification = async (req, res) => {
+  if (!await Card.exists({_id: req.params.cardId})) {
+    res.status(404).send({message: "Запрашиваемый пользователь не найден"});
+    return true;
+  }
+  else  return false;
 }
+
 
 module.exports.getUsersAll = async (req, res) => {
 	try {
@@ -15,8 +18,13 @@ module.exports.getUsersAll = async (req, res) => {
 }
 
 module.exports.getUser = async (req, res) => {
+  const _id = req.params.userId;
 	try {
-		const user = await User.find({_id: req.params.userId})
+    if (!await User.exists({_id})) {
+      res.status(404).send({message: "Запрашиваемый пользователь не найден"});
+      return;
+    }
+		const user = await User.find({_id})
 		await res.send(200, user);
 	} catch (err) {sendErrorMessage(err, res)}
 
