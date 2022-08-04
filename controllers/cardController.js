@@ -40,6 +40,7 @@ module.exports.likeCard = async (req, res) => {
 				req.params.cardId,
 				{$addToSet: {likes: req.user._id}}, // добавить _id в массив, если его там нет
 				{new: true},
+
 		)
 		await res.send(200, newCard);
 	} catch (err) {
@@ -48,11 +49,14 @@ module.exports.likeCard = async (req, res) => {
 }
 
 module.exports.dislikeCard = async (req, res) => {
+  const _id = req.params.cardId;
 	try {
+    if (!await Card.exists({_id})) return res.status(404).send({message:"Карточка не найдена"})
+    // if (await Card.find({_id: req.params.cardId}).length)
 		const newCard = await Card.findByIdAndUpdate(
 				req.params.cardId,
 				{$pull: {likes: req.user._id}},
-				{new: true},
+				{new: true}
 		);
 		await res.send(200, newCard);
 	} catch (err) {
