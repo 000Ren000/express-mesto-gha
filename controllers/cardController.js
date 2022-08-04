@@ -15,7 +15,7 @@ const cardVerification = async (req, res) => {
 module.exports.getCardAll = async (req, res) => {
   try {
     const allCard = await Card.find({});
-    await res.send(200, allCard);
+    await res.send(allCard);
   } catch (err) {
     sendErrorMessage(err, res)
   }
@@ -26,7 +26,7 @@ module.exports.createCard = async (req, res) => {
   try {
     const {name, link} = req.body;
     const newCard = await Card.create({name, link, owner: req.user._id});
-    await res.send(201, newCard);
+    await res.status(201).send(newCard);
   } catch (err) {
     sendErrorMessage(err, res)
   }
@@ -37,7 +37,7 @@ module.exports.deleteCard = async (req, res) => {
   try {
     if (await cardVerification(req, res)) return;
     await Card.deleteOne({_id: req.params.cardId});
-    await res.send(200, {message: "Карточка удалена!"})
+    await res.send({message: "Карточка удалена!"});
   } catch (err) {
     sendErrorMessage(err, res)
   }
@@ -51,7 +51,7 @@ module.exports.likeCard = async (req, res) => {
       {$addToSet: {likes: req.user._id}}, // добавить _id в массив, если его там нет
       {new: true},
     )
-    await res.send(200, newCard);
+    await res.send(newCard);
   } catch (err) {
     sendErrorMessage(err, res)
   }
@@ -65,7 +65,7 @@ module.exports.dislikeCard = async (req, res) => {
       {$pull: {likes: req.user._id}},
       {new: true}
     );
-    await res.send(200, newCard);
+    await res.send(newCard);
   } catch (err) {
     sendErrorMessage(err, res)
   }
