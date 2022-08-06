@@ -6,9 +6,8 @@ const cardVerification = async (req, res) => {
     res.status(NOTFOUND_ERROR).send({ message: 'Карточка не найдена' });
     return true;
   }
+  return false;
 };
-
-//Методы работы с карточками
 
 // GET /cards — возвращает все карточки
 module.exports.getCardAll = async (req, res) => {
@@ -48,7 +47,7 @@ module.exports.likeCard = async (req, res) => {
     const newCard = await Card.findByIdAndUpdate(
       req.params.cardId,
       { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
-      { new: true }
+      { new: true },
     );
     await res.send(newCard);
   } catch (err) {
@@ -62,7 +61,7 @@ module.exports.dislikeCard = async (req, res) => {
     const newCard = await Card.findByIdAndUpdate(
       req.params.cardId,
       { $pull: { likes: req.user._id } },
-      { new: true }
+      { new: true },
     );
     await res.send(newCard);
   } catch (err) {

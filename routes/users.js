@@ -1,3 +1,4 @@
+const router = require('express').Router();
 const {
   getUsersAll,
   getUser,
@@ -5,7 +6,6 @@ const {
   updateProfile,
   updateAvatar,
 } = require('../controllers/usersController');
-const router = require('express').Router();
 
 // GET /users — возвращает всех пользователей
 router.get('/', getUsersAll);
