@@ -1,4 +1,6 @@
 module.exports.sendErrorMessage = (err, res) => {
+  if (err.name === 'CastError')
+    return res.status(NOTFOUND_ERROR).send({message: 'Запрашиваемые данные не найдены'});
   if (err.name === 'ValidationError')
     return res
       .status(ERROR_CODE)
