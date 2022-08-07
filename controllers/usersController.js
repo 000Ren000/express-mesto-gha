@@ -42,9 +42,11 @@ module.exports.updateProfile = async (req, res) => {
     const newUser = await User.findByIdAndUpdate(
       req.user._id,
       { name, about },
-      { new: true },
+      {
+        new: true,
+        runValidators: true,
+      },
     );
-
     await res.send(newUser);
   } catch (err) {
     sendErrorMessage(err, res);

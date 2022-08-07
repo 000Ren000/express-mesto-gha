@@ -2,6 +2,12 @@ const ERROR_CODE = 400;
 const NOTFOUND_ERROR = 404;
 const SERVER_ERROR = 500;
 
+module.exports = {
+  ERROR_CODE,
+  NOTFOUND_ERROR,
+  SERVER_ERROR,
+};
+
 module.exports.sendErrorMessage = (err, res) => {
   if (err.name === 'CastError') {
     return res
@@ -16,10 +22,4 @@ module.exports.sendErrorMessage = (err, res) => {
   return res
     .status(SERVER_ERROR)
     .send({ message: 'Внутренняя ошибка сервера' });
-};
-
-module.exports = {
-  ERROR_CODE,
-  NOTFOUND_ERROR,
-  SERVER_ERROR,
 };
