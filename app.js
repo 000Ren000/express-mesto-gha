@@ -17,7 +17,7 @@ app.use((req, res, next) => {
 app.use(express.json({ extended: true }));
 app.use('/users', userRout);
 app.use('/cards', cardRout);
-
 app.listen(PORT, () => {
+  // eslint-disable-next-line no-console
   console.log('Ссылка на сервер', BASE_PATH);
 });

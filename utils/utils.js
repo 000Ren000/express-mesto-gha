@@ -14,7 +14,7 @@ module.exports.sendErrorMessage = (err, res) => {
       .status(NOTFOUND_ERROR)
       .send({ message: 'Запрашиваемые данные не найдены' });
   }
-  if (err.name === 'ValidationError') {
+  if (err.name === 'ValidationError' || err.name === 'Validation failed') {
     return res
       .status(ERROR_CODE)
       .send({ message: 'Не правильно введены данные' });
