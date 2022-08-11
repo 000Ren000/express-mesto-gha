@@ -37,7 +37,7 @@ module.exports.createUser = async (req, res) => {
     const {
       name, about, avatar, email,
     } = req.body;
-    if (req.body.password === undefined) {
+    if (req.body.password === undefined || req.body.email === undefined) {
       return res.status(ERROR_CODE).send({ message: 'Не правильно переданы данные' });
     }
     const password = await bcrypt.hash(req.body.password.toString(), SAL_ROUND);
