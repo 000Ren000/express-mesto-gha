@@ -1,4 +1,6 @@
+const bcrypt = require('bcrypt');
 const User = require('../models/user');
+const { SAL_ROUND } = require('../config');
 const { sendErrorMessage, NOTFOUND_ERROR } = require('../utils/utils');
 
 module.exports.getUsersAll = async (req, res) => {
@@ -29,12 +31,13 @@ module.exports.getUser = async (req, res) => {
 module.exports.createUser = async (req, res) => {
   try {
     const {
-      name, about, avatar, email, password,
+      name, about, avatar, email,
     } = req.body;
+    const password = await bcrypt.hash(req.body.password.toString(), SAL_ROUND);
     const newUser = await User.create({
       name, about, avatar, email, password,
     });
-    await res.status(201).send(newUser);
+    res.status(201).send(newUser);
   } catch (err) {
     sendErrorMessage(err, res);
   }

@@ -14,7 +14,7 @@ const userSchema = new mongoose.Schema({
     maxLength: 30,
     default: 'Исследователь океанов',
   },
-  avatar: { type: String },
+  avatar: { type: String, default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png' },
   email: {
     type: String,
     require: true,
@@ -25,7 +25,7 @@ const userSchema = new mongoose.Schema({
       message: 'Не коректно введены данные',
     },
   },
-  password: { type: String, minLength: 2, maxLength: 30 },
+  password: { type: String, minLength: 1 },
 
 });
 
