@@ -1,11 +1,13 @@
 const ERROR_CODE = 400;
 const NOTFOUND_ERROR = 404;
+const DATACHANGE_EROR = 409;
 const SERVER_ERROR = 500;
 
 module.exports = {
   ERROR_CODE,
   NOTFOUND_ERROR,
   SERVER_ERROR,
+  DATACHANGE_EROR,
 };
 
 module.exports.sendErrorMessage = (err, res) => {
