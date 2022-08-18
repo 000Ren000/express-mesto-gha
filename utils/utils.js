@@ -1,3 +1,7 @@
+const jwt = require('jsonwebtoken');
+const config = require('config');
+
+
 const ERROR_CODE = 400;
 const NOTFOUND_ERROR = 404;
 const DATACHANGE_EROR = 409;
@@ -8,6 +12,15 @@ module.exports = {
   NOTFOUND_ERROR,
   SERVER_ERROR,
   DATACHANGE_EROR,
+};
+
+module.exports.createJWT = (_id) => {
+  const token = jwt.sign(
+    { _id },
+    config.get('jwtSecret'),
+    { expiresIn: '7d' },
+  );
+  return token;
 };
 
 module.exports.sendErrorMessage = (err, res) => {

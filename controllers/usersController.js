@@ -2,7 +2,7 @@ const bcrypt = require('bcrypt');
 const User = require('../models/user');
 const { SAL_ROUND } = require('../config');
 const {
-  sendErrorMessage, NOTFOUND_ERROR, ERROR_CODE, DATACHANGE_EROR,
+  sendErrorMessage, NOTFOUND_ERROR, ERROR_CODE, DATACHANGE_EROR, createJWT,
 } = require('../utils/utils');
 
 const excludedFields = '-password -__v';
@@ -114,7 +114,7 @@ module.exports.login = async (req, res) => {
       .then((user) => {
         if (!user) return res.status(DATACHANGE_EROR).send({ message: 'Не правильно переданы данные' });
         if (bcrypt.compareSync(password.toString(), user.password.toString())) {
-          res.status(201).json({ _id: user._id });
+          res.status(201).json({ jwt: createJWT(user._id) });
         } else return res.status(DATACHANGE_EROR).send({ message: 'Не правильно переданы данные' });
       }).catch((err) => res.send({ message: `Ошибка: ${err.message}` }));
   } catch (err) {
