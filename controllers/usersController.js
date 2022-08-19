@@ -2,7 +2,11 @@ const bcrypt = require('bcrypt');
 const User = require('../models/user');
 const { SAL_ROUND } = require('../config');
 const {
-  sendErrorMessage, NOTFOUND_ERROR_404, ERROR_CODE_400, DATACHANGE_EROR_500, createJWT,
+  sendErrorMessage,
+  createJWT,
+  NOTFOUND_ERROR_404,
+  ERROR_CODE_400,
+  DATACHANGE_EROR_409,
 } = require('../utils/utils');
 
 const excludedFields = '-password -__v';
@@ -18,7 +22,7 @@ module.exports.getUsersAll = async (req, res) => {
 };
 
 module.exports.getUser = async (req, res) => {
-  const _id = req.params.userId;
+  const _id = req.user._id;
   try {
     const user = await User.find({ _id }, excludedFields);
     if (!(await User.exists({ _id }))) {
@@ -44,7 +48,7 @@ module.exports.createUser = async (req, res) => {
     }
 
     const user = await User.findOne({ email });
-    if (user !== null) return res.status(DATACHANGE_EROR_500).send({ message: 'Не правильно переданы данные' });
+    if (user !== null) return res.status(DATACHANGE_EROR_409).send({ message: 'Не правильно переданы данные' });
     const password = await bcrypt.hash(req.body.password.toString(), SAL_ROUND);
     const newUser = await User.create({
       name, about, avatar, email, password,
@@ -56,25 +60,6 @@ module.exports.createUser = async (req, res) => {
       avatar: newUser.avatar,
       email: newUser.email,
     });
-
-    // eslint-disable-next-line consistent-return
-    // User.findOne({ email }).then((user) => {
-    //   if (user === null) {
-    //     const password = await bcrypt.hash(req.body.password.toString(), SAL_ROUND);
-    //     const newUser = User.create({
-    //       name, about, avatar, email, password,
-    //     });
-    //     res.status(201).send({
-    //       _id: newUser._id,
-    //       about: newUser.about,
-    //       name: newUser.name,
-    //       avatar: newUser.avatar,
-    //       email: newUser.email,
-    //     });
-    //   } else {
-    //     return res.status(DATACHANGE_EROR_500).send({ message: 'Не правильно переданы данные' });
-    //   }
-    // });
   } catch (err) {
     sendErrorMessage(err, res);
   }
@@ -109,15 +94,13 @@ module.exports.login = async (req, res) => {
     if (password === undefined || email === undefined) {
       return res.status(ERROR_CODE_400).send({ message: 'Не правильно переданы данные' });
     }
-    User.findOne({ email })
-      // eslint-disable-next-line consistent-return
-      .then((user) => {
-        if (!user) return res.status(DATACHANGE_EROR_500).send({ message: 'Не правильно переданы данные' });
-        if (bcrypt.compareSync(password.toString(), user.password.toString())) {
-          res.status(201).json({ jwt: createJWT(user._id) });
-        } else return res.status(DATACHANGE_EROR_500).send({ message: 'Не правильно переданы данные' });
-      }).catch((err) => res.send({ message: `Ошибка: ${err.message}` }));
+    const user = await User.findOne({ email });
+    if (!user) return res.status(DATACHANGE_EROR_409).send({ message: 'Не правильно переданы данные' });
+    if (bcrypt.compareSync(password.toString(), user.password.toString())) {
+      res.status(201).json({ jwt: createJWT(user._id) });
+    } else return res.status(DATACHANGE_EROR_409).send({ message: 'Не правильно переданы данные' });
   } catch (err) {
     sendErrorMessage(err, res);
+    return;
   }
 };

@@ -12,11 +12,12 @@ const app = express();
 
 mongoose.connect('mongodb://localhost:27017/mestodb');
 
-app.use(jwtVerify);
+
 app.use(express.json({ extended: true }));
 app.post('/signin', login);
 app.post('/signup', createUser);
 
+app.use(jwtVerify);
 app.use('/users', userRout);
 app.use('/cards', cardRout);
 app.listen(PORT, () => {
