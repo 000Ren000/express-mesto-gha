@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
 const config = require('config');
 const cardRout = require('./routes/cards');
 const userRout = require('./routes/users');
@@ -12,8 +13,8 @@ const app = express();
 
 mongoose.connect('mongodb://localhost:27017/mestodb');
 
-
 app.use(express.json({ extended: true }));
+app.use(bodyParser.json());
 app.post('/signin', login);
 app.post('/signup', createUser);
 

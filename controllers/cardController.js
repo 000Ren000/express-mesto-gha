@@ -24,7 +24,7 @@ module.exports.createCard = async (req, res) => {
   try {
     const { name, link } = req.body;
     const newCard = await Card.create({ name, link, owner: req.user._id });
-    await res.status(201).send(newCard);
+    res.status(201).send(newCard);
   } catch (err) {
     sendErrorMessage(err, res);
   }
@@ -59,7 +59,8 @@ module.exports.likeCard = async (req, res) => {
     const newCard = await Card.findByIdAndUpdate(
       req.params.cardId,
       { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
-      { new: true },);
+      { new: true },
+    );
     await res.send(newCard);
   } catch (err) {
     sendErrorMessage(err, res);
@@ -69,7 +70,10 @@ module.exports.likeCard = async (req, res) => {
 module.exports.dislikeCard = async (req, res) => {
   try {
     if (await cardVerification(req, res)) return;
-    const newCard = await Card.findByIdAndUpdate(req.params.cardId, { $pull: { likes: req.user._id } }, { new: true },);
+    const newCard = await Card.findByIdAndUpdate(req.params.cardId,
+      { $pull: { likes: req.user._id } },
+      { new: true },
+    );
     await res.send(newCard);
   } catch (err) {
     sendErrorMessage(err, res);
