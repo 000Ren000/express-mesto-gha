@@ -25,7 +25,12 @@ const userSchema = new mongoose.Schema({
       message: 'Не коректно введены данные',
     },
   },
-  password: { type: String, minLength: 1, require: true },
+  password: {
+    type: String,
+    minLength: 1,
+    require: true,
+    select: false,
+  },
 
 });
 

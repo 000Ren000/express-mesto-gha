@@ -9,7 +9,7 @@ const {
   DATACHANGE_EROR_409,
 } = require('../utils/utils');
 
-const excludedFields = '-password -__v';
+const excludedFields = '-__v';
 
 module.exports.getUsersAll = async (req, res) => {
   try {
@@ -94,7 +94,7 @@ module.exports.login = async (req, res) => {
     if (password === undefined || email === undefined) {
       return res.status(ERROR_CODE_400).send({ message: 'Не правильно переданы данные' });
     }
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).select('+password');
     if (!user) return res.status(DATACHANGE_EROR_409).send({ message: 'Не правильно переданы данные' });
     if (bcrypt.compareSync(password.toString(), user.password.toString())) {
       res.status(201).json({ jwt: createJWT(user._id) });
