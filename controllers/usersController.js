@@ -95,8 +95,7 @@ module.exports.login = async (req, res, next) => {
     if (!user) throw new DataChangeError('Не правильно переданы данные');
     if (bcrypt.compareSync(password.toString(), user.password.toString())) {
       res.status(201).json({ jwt: createJWT(user._id) });
-      // } else return res.status(DataChangeError).send({ message: 'Не правильно переданы данные' });
-    } else throw new syntaxError('Не правильно переданы данные');
+    } else throw new DataChangeError('Не правильно переданы данные');
   } catch (err) {
     next(err);
   }
