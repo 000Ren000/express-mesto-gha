@@ -4,51 +4,48 @@ const { SAL_ROUND } = require('../config');
 const {
   sendErrorMessage,
   createJWT,
-  NOTFOUND_ERROR_404,
-  ERROR_CODE_400,
-  DATACHANGE_EROR_409,
+  NotFoundError, // 404
+  ErrorCode, // 400
+  DataChangeError, //409
 } = require('../utils/utils');
 
 const excludedFields = '-__v';
 
-module.exports.getUsersAll = async (req, res) => {
+module.exports.getUsersAll = async (req, res, next) => {
   try {
     // eslint-disable-next-line consistent-return
     const users = await User.find({}, excludedFields);
     await res.send(users);
   } catch (err) {
-    sendErrorMessage(err, res);
+    next(err)
   }
 };
 
-module.exports.getUser = async (req, res) => {
+module.exports.getUser = async (req, res, next) => {
   const _id = req.user._id;
   try {
     const user = await User.find({ _id }, excludedFields);
     if (!(await User.exists({ _id }))) {
-      res
-        .status(NOTFOUND_ERROR_404)
-        .send({ message: 'Запрашиваемый пользователь не найден' });
-      return;
+      throw new NotFoundError('Запрашиваемый пользователь не найден');
     }
     res.send(user);
   } catch (err) {
-    sendErrorMessage(err, res);
+    next(err)
   }
 };
 
 // eslint-disable-next-line consistent-return
-module.exports.createUser = async (req, res) => {
+module.exports.createUser = async (req, res, next) => {
   try {
     const {
       name, about, avatar, email,
     } = req.body;
     if (req.body.password === undefined || req.body.email === undefined) {
-      return res.status(ERROR_CODE_400).send({ message: 'Не правильно переданы данные' });
+      throw new ErrorCode('Не правильно переданы данные');
     }
 
     const user = await User.findOne({ email });
-    if (user !== null) return res.status(DATACHANGE_EROR_409).send({ message: 'Не правильно переданы данные' });
+    if (user !== null) throw new DataChangeError('Не правильно переданы данные');
     const password = await bcrypt.hash(req.body.password.toString(), SAL_ROUND);
     const newUser = await User.create({
       name, about, avatar, email, password,
@@ -61,11 +58,11 @@ module.exports.createUser = async (req, res) => {
       email: newUser.email,
     });
   } catch (err) {
-    sendErrorMessage(err, res);
+    next(err);
   }
 };
 
-module.exports.updateProfile = async (req, res) => {
+module.exports.updateProfile = async (req, res, next) => {
   try {
     const { name, about } = req.body; // получим из объекта запроса имя и описание пользователя
     const newUser = await User.findByIdAndUpdate(req.user._id, { name, about }, {
@@ -73,34 +70,34 @@ module.exports.updateProfile = async (req, res) => {
     },);
     await res.send(newUser);
   } catch (err) {
-    sendErrorMessage(err, res);
+    next(err);
   }
 };
 
-module.exports.updateAvatar = async (req, res) => {
+module.exports.updateAvatar = async (req, res, next) => {
   try {
     const { avatar } = req.body;
     const newUser = await User.findByIdAndUpdate(req.user._id, { avatar }, { new: true },);
     await res.send(newUser);
   } catch (err) {
-    sendErrorMessage(err, res);
+    next(err);
   }
 };
 
 // eslint-disable-next-line consistent-return
-module.exports.login = async (req, res) => {
+module.exports.login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
     if (password === undefined || email === undefined) {
-      return res.status(ERROR_CODE_400).send({ message: 'Не правильно переданы данные' });
+      throw ErrorCode('Не правильно переданы данные');
     }
     const user = await User.findOne({ email }).select('+password');
-    if (!user) return res.status(DATACHANGE_EROR_409).send({ message: 'Не правильно переданы данные' });
+    if (!user) throw new DataChangeError('Не правильно переданы данные');
     if (bcrypt.compareSync(password.toString(), user.password.toString())) {
       res.status(201).json({ jwt: createJWT(user._id) });
-    } else return res.status(DATACHANGE_EROR_409).send({ message: 'Не правильно переданы данные' });
+      // } else return res.status(DataChangeError).send({ message: 'Не правильно переданы данные' });
+    } else throw new syntaxError('Не правильно переданы данные');
   } catch (err) {
-    sendErrorMessage(err, res);
-    return;
+    next(err);
   }
 };

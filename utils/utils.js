@@ -1,18 +1,54 @@
 const jwt = require('jsonwebtoken');
 const config = require('config');
+const { Error } = require('mongoose');
 
-const ERROR_CODE_400 = 400;
-const TOKEN_ERROR_401 = 401;
-const NOTFOUND_ERROR_404 = 404;
-const DATACHANGE_EROR_409 = 409;
-const SERVER_ERROR_500 = 500;
+// const ErrorCode = 400;
+// const TOKEN_ERROR_401 = 401;
+// const NotFoundError = 404;
+// const DataChangeError = 409;
+// const SERVER_ERROR_500 = 500;
+
+class ErrorCode extends Error {
+  constructor(message) {
+    super(message);
+    this.statusCode = 400;
+  }
+}
+
+class TOKEN_ERROR_401 extends Error {
+  constructor(message) {
+    super(message);
+    this.statusCode = 401;
+  }
+}
+
+class NotFoundError extends Error {
+  constructor(message) {
+    super(message);
+    this.statusCode = 404;
+  }
+}
+
+class DataChangeError extends Error {
+  constructor(message) {
+    super(message);
+    this.statusCode = 409;
+  }
+}
+
+class SERVER_ERROR_500 extends Error {
+  constructor(message) {
+    super(message);
+    this.statusCode = 500;
+  }
+}
 
 module.exports = {
-  ERROR_CODE_400,
+  ErrorCode,
   TOKEN_ERROR_401,
-  NOTFOUND_ERROR_404,
+  NotFoundError,
   SERVER_ERROR_500,
-  DATACHANGE_EROR_409,
+  DataChangeError,
 };
 
 module.exports.createJWT = (_id) => {
@@ -27,12 +63,12 @@ module.exports.createJWT = (_id) => {
 module.exports.sendErrorMessage = (err, res) => {
   if (err.name === 'CastError') {
     return res
-      .status(NOTFOUND_ERROR_404)
+      .status(NotFoundError)
       .send({ message: 'Запрашиваемые данные не найдены' });
   }
   if (err.name === 'ValidationError' || err.name === 'Validation failed') {
     return res
-      .status(ERROR_CODE_400)
+      .status(ErrorCode)
       .send({ message: 'Не правильно введены данные' });
   }
   return res
