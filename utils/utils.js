@@ -3,7 +3,7 @@ const config = require('config');
 const { Error } = require('mongoose');
 
 // const ErrorCode = 400;
-// const TOKEN_ERROR_401 = 401;
+// const TokenError = 401;
 // const NotFoundError = 404;
 // const DataChangeError = 409;
 // const SERVER_ERROR_500 = 500;
@@ -15,7 +15,7 @@ class ErrorCode extends Error {
   }
 }
 
-class TOKEN_ERROR_401 extends Error {
+class TokenError extends Error {
   constructor(message) {
     super(message);
     this.statusCode = 401;
@@ -45,7 +45,7 @@ class SERVER_ERROR_500 extends Error {
 
 module.exports = {
   ErrorCode,
-  TOKEN_ERROR_401,
+  TokenError,
   NotFoundError,
   SERVER_ERROR_500,
   DataChangeError,
