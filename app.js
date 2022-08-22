@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const config = require('config');
+const { errors, celebrate, Joi } = require('celebrate');
 const cardRout = require('./routes/cards');
 const userRout = require('./routes/users');
 const { login, createUser } = require('./controllers/usersController');
@@ -15,14 +16,29 @@ mongoose.connect('mongodb://localhost:27017/mestodb');
 
 app.use(express.json({ extended: true }));
 app.use(bodyParser.json());
-app.post('/signin', login);
-app.post('/signup', createUser);
+app.post('/signin', celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().required().min(2).max(30),
+    password: Joi.string().required().min(1).max(30),
+  }),
+}), login);
+app.post('/signup', celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().required().min(2).max(30),
+    password: Joi.string().required().min(1).max(30),
+  }),
+}), createUser);
 
-app.use(jwtVerify);
+app.use(celebrate({
+  headers: Joi.object().keys({
+    authorization: Joi.string().required(),
+  }).unknown(),
+}), jwtVerify);
 app.use('/users', userRout);
 app.use('/cards', cardRout);
 
-// Мидла обработки ошибок
+app.use(errors());
+
 // eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => {
   // если у ошибки нет статуса, выставляем 500

@@ -11,16 +11,6 @@ const {
 
 const excludedFields = '-__v';
 
-module.exports.getUsersAll = async (req, res, next) => {
-  try {
-    // eslint-disable-next-line consistent-return
-    const users = await User.find({}, excludedFields);
-    await res.send(users);
-  } catch (err) {
-    next(err)
-  }
-};
-
 module.exports.getUser = async (req, res, next) => {
   const _id = req.user._id;
   try {
@@ -30,16 +20,14 @@ module.exports.getUser = async (req, res, next) => {
     }
     res.send(user);
   } catch (err) {
-    next(err)
+    next(err);
   }
 };
 
 // eslint-disable-next-line consistent-return
 module.exports.createUser = async (req, res, next) => {
   try {
-    const {
-      name, about, avatar, email,
-    } = req.body;
+    const { email } = req.body;
     if (req.body.password === undefined || req.body.email === undefined) {
       throw new ErrorCode('Не правильно переданы данные');
     }
@@ -47,9 +35,7 @@ module.exports.createUser = async (req, res, next) => {
     const user = await User.findOne({ email });
     if (user !== null) throw new DataChangeError('Не правильно переданы данные');
     const password = await bcrypt.hash(req.body.password.toString(), SAL_ROUND);
-    const newUser = await User.create({
-      name, about, avatar, email, password,
-    });
+    const newUser = await User.create({ email, password });
     res.status(201).send({
       _id: newUser._id,
       about: newUser.about,

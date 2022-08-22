@@ -5,7 +5,7 @@ const {
 
 // eslint-disable-next-line consistent-return
 const cardVerification = async (req, res) => {
-  if (Card.exists({ _id: req.params.cardId })) {
+  if (!Card.exists({ _id: req.params.cardId })) {
     return res.status(404).json({ message: 'Карточка не найдена' });
   }
 };

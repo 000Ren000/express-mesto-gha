@@ -14,7 +14,16 @@ const userSchema = new mongoose.Schema({
     maxLength: 30,
     default: 'Исследователь океанов',
   },
-  avatar: { type: String, default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png' },
+  avatar: {
+    type: String,
+    validate: {
+      validator(v) {
+        return /[-a-zA-Z0-9@:%_\+.~#?&\/=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&\/=]*)?/gi.test(v);
+      },
+      message: (props) => `${props.value} Не правильно указаны данные`,
+    },
+    default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png'
+  },
   email: {
     type: String,
     require: true,
