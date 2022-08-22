@@ -22,7 +22,7 @@ const userSchema = new mongoose.Schema({
       },
       message: (props) => `${props.value} Не правильно указаны данные`,
     },
-    default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png'
+    default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
   },
   email: {
     type: String,

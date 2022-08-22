@@ -1,12 +1,7 @@
+// eslint-disable-next-line max-classes-per-file
 const jwt = require('jsonwebtoken');
 const config = require('config');
 const { Error } = require('mongoose');
-
-// const ErrorCode = 400;
-// const TokenError = 401;
-// const NotFoundError = 404;
-// const DataChangeError = 409;
-// const SERVER_ERROR_500 = 500;
 
 class ErrorCode extends Error {
   constructor(message) {

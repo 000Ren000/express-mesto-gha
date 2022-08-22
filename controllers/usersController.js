@@ -2,17 +2,16 @@ const bcrypt = require('bcrypt');
 const User = require('../models/user');
 const { SAL_ROUND } = require('../config');
 const {
-  sendErrorMessage,
   createJWT,
   NotFoundError, // 404
   ErrorCode, // 400
-  DataChangeError, //409
+  DataChangeError, // 409
 } = require('../utils/utils');
 
 const excludedFields = '-__v';
 
 module.exports.getUser = async (req, res, next) => {
-  const _id = req.user._id;
+  const { _id } = req.user;
   try {
     const user = await User.find({ _id }, excludedFields);
     if (!(await User.exists({ _id }))) {
@@ -53,7 +52,7 @@ module.exports.updateProfile = async (req, res, next) => {
     const { name, about } = req.body; // получим из объекта запроса имя и описание пользователя
     const newUser = await User.findByIdAndUpdate(req.user._id, { name, about }, {
       new: true, runValidators: true,
-    },);
+    });
     await res.send(newUser);
   } catch (err) {
     next(err);
@@ -63,7 +62,7 @@ module.exports.updateProfile = async (req, res, next) => {
 module.exports.updateAvatar = async (req, res, next) => {
   try {
     const { avatar } = req.body;
-    const newUser = await User.findByIdAndUpdate(req.user._id, { avatar }, { new: true },);
+    const newUser = await User.findByIdAndUpdate(req.user._id, { avatar }, { new: true });
     await res.send(newUser);
   } catch (err) {
     next(err);
