@@ -3,18 +3,10 @@ const User = require('../models/user');
 const { SAL_ROUND } = require('../config');
 const {
   createJWT,
-  NotFoundError, // 404
-  ErrorCode, // 400
-  DataChangeError, TokenError, // 409
+  checkValidation,
+  NotFoundError, TokenError, // 404
 } = require('../utils/utils');
 
-const checkValidation = (err, next) => {
-  if (err.code === 11000) {
-    next(new DataChangeError('Не правильно переданы данные'));
-  } else if (err.name === 'ValidationError') {
-    next(new ErrorCode('Не правильно переданы данные'));
-  } else next(err);
-};
 module.exports.getUser = async (req, res, next) => {
   const { _id } = req.user;
   try {
@@ -31,7 +23,6 @@ module.exports.getUser = async (req, res, next) => {
 module.exports.createUser = async (req, res, next) => {
   try {
     const { email } = req.body;
-    const user = await User.findOne({ email });
     const password = await bcrypt.hash(req.body.password.toString(), SAL_ROUND);
     const newUser = await User.create({ email, password });
     res.status(201).send({

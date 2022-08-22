@@ -55,6 +55,16 @@ module.exports.createJWT = (_id) => {
   return token;
 };
 
+module.exports.checkValidation = (err, next) => {
+  if (err.name === 'CastError') {
+    throw new NotFoundError('Запрашиваемые данные не найдены');
+  } else if (err.code === 11000) {
+    next(new DataChangeError('Не правильно переданы данные'));
+  } else if (err.name === 'ValidationError') {
+    next(new ErrorCode('Не правильно переданы данные'));
+  } else next(err);
+};
+
 module.exports.sendErrorMessage = (err, res) => {
   if (err.name === 'CastError') {
     return res
