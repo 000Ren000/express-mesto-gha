@@ -8,12 +8,10 @@ const {
   DataChangeError, // 409
 } = require('../utils/utils');
 
-const excludedFields = '-__v';
-
 module.exports.getUser = async (req, res, next) => {
   const { _id } = req.user;
   try {
-    const user = await User.find({ _id }, excludedFields);
+    const user = await User.find({ _id });
     if (!(await User.exists({ _id }))) {
       throw new NotFoundError('Запрашиваемый пользователь не найден');
     }
@@ -23,16 +21,10 @@ module.exports.getUser = async (req, res, next) => {
   }
 };
 
-// eslint-disable-next-line consistent-return
 module.exports.createUser = async (req, res, next) => {
   try {
     const { email } = req.body;
-    if (req.body.password === undefined || req.body.email === undefined) {
-      throw new ErrorCode('Не правильно переданы данные');
-    }
-
     const user = await User.findOne({ email });
-    if (user !== null) throw new DataChangeError('Не правильно переданы данные');
     const password = await bcrypt.hash(req.body.password.toString(), SAL_ROUND);
     const newUser = await User.create({ email, password });
     res.status(201).send({
@@ -43,7 +35,9 @@ module.exports.createUser = async (req, res, next) => {
       email: newUser.email,
     });
   } catch (err) {
-    next(err);
+    if (err.code === 11000) {
+      next(new DataChangeError('Не правильно переданы данные'));
+    } else next(err);
   }
 };
 
