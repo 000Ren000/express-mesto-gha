@@ -5,9 +5,16 @@ const {
   createJWT,
   NotFoundError, // 404
   ErrorCode, // 400
-  DataChangeError, // 409
+  DataChangeError, TokenError, // 409
 } = require('../utils/utils');
 
+const checkValidation = (err, next) => {
+  if (err.code === 11000) {
+    next(new DataChangeError('Не правильно переданы данные'));
+  } else if (err.name === 'ValidationError') {
+    next(new ErrorCode('Не правильно переданы данные'));
+  } else next(err);
+};
 module.exports.getUser = async (req, res, next) => {
   const { _id } = req.user;
   try {
@@ -35,11 +42,7 @@ module.exports.createUser = async (req, res, next) => {
       email: newUser.email,
     });
   } catch (err) {
-    if (err.code === 11000) {
-      next(new DataChangeError('Не правильно переданы данные'));
-    } else if (err.name === 'ValidationError') {
-      next(new ErrorCode('Не правильно переданы данные'));
-    } else next(err);
+    checkValidation(err, next);
   }
 };
 
@@ -51,7 +54,7 @@ module.exports.updateProfile = async (req, res, next) => {
     });
     await res.send(newUser);
   } catch (err) {
-    next(err);
+    checkValidation(err, next);
   }
 };
 
@@ -61,7 +64,7 @@ module.exports.updateAvatar = async (req, res, next) => {
     const newUser = await User.findByIdAndUpdate(req.user._id, { avatar }, { new: true });
     await res.send(newUser);
   } catch (err) {
-    next(err);
+    checkValidation(err, next);
   }
 };
 
@@ -69,15 +72,12 @@ module.exports.updateAvatar = async (req, res, next) => {
 module.exports.login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
-    if (password === undefined || email === undefined) {
-      throw ErrorCode('Не правильно переданы данные');
-    }
     const user = await User.findOne({ email }).select('+password');
-    if (!user) throw new DataChangeError('Не правильно переданы данные');
+    if (!user) throw new TokenError('Не правильно переданы данные');
     if (bcrypt.compareSync(password.toString(), user.password.toString())) {
       res.status(201).json({ jwt: createJWT(user._id) });
-    } else throw new DataChangeError('Не правильно переданы данные');
+    } else throw new TokenError('Не правильно переданы данные');
   } catch (err) {
-    next(err);
+    checkValidation(err, next);
   }
 };
