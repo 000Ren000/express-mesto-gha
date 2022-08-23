@@ -1,6 +1,7 @@
 const Card = require('../models/card');
 const {
   DataChangeError, // 409
+  NotFoundError, // 404
 } = require('../utils/utils');
 
 // eslint-disable-next-line consistent-return
@@ -9,9 +10,9 @@ const {
 //     return res.status(404).json({ message: 'Карточка не найдена' });
 //   }
 
-const cardVerification = async (req, res) => {
+const cardVerification = async (req, next) => {
   if (!Card.exists({ _id: req.params.cardId })) {
-    return res.status(404).json({ message: 'Карточка не найдена' });
+    next(new NotFoundError('Карточка не найдена'));
   }
 };
 
@@ -40,7 +41,7 @@ module.exports.createCard = async (req, res, next) => {
 // eslint-disable-next-line consistent-return
 module.exports.deleteCard = async (req, res, next) => {
   try {
-    cardVerification(req, res);
+    cardVerification(req, next);
     const userId = req.user._id;
     const { cardId } = req.params;
     // eslint-disable-next-line consistent-return
@@ -60,7 +61,7 @@ module.exports.deleteCard = async (req, res, next) => {
 
 module.exports.likeCard = async (req, res, next) => {
   try {
-    cardVerification(req, res);
+    cardVerification(req, next);
     // eslint-disable-next-line max-len
     const newCard = await Card.findByIdAndUpdate(
       req.params.cardId,
@@ -75,7 +76,7 @@ module.exports.likeCard = async (req, res, next) => {
 
 module.exports.dislikeCard = async (req, res, next) => {
   try {
-    cardVerification(req, res);
+    cardVerification(req, next);
     const newCard = await Card.findByIdAndUpdate(
       req.params.cardId,
       { $pull: { likes: req.user._id } },
