@@ -2,6 +2,7 @@
 const jwt = require('jsonwebtoken');
 const config = require('config');
 const { Error } = require('mongoose');
+const validator = require('validator');
 
 class ErrorCode extends Error {
   constructor(message) {
@@ -54,7 +55,12 @@ module.exports.createJWT = (_id) => {
   );
   return token;
 };
-
+module.exports.validateURL = (value) => {
+  if (!validator.isURL(value, { require_protocol: true })) {
+    throw new ErrorCode('Неправильный формат ссылки');
+  }
+  return value;
+};
 module.exports.checkValidation = (err, next) => {
   if (err.name === 'CastError') {
     throw new NotFoundError('Запрашиваемые данные не найдены');

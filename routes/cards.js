@@ -1,5 +1,4 @@
 const router = require('express').Router();
-const validator = require('validator');
 const { celebrate, Joi } = require('celebrate');
 const {
   getCardAll,
@@ -8,14 +7,7 @@ const {
   likeCard,
   dislikeCard,
 } = require('../controllers/cardController');
-const { ErrorCode } = require('../utils/utils');
-
-const validateURL = (value) => {
-  if (!validator.isURL(value, { require_protocol: true })) {
-    throw new ErrorCode('Неправильный формат ссылки');
-  }
-  return value;
-};
+const { validateURL } = require('../utils/utils');
 // GET /cards — возвращает все карточки
 router.get('/', getCardAll);
 
