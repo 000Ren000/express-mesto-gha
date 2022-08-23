@@ -1,8 +1,7 @@
 const Card = require('../models/card');
-const {
-  DataChangeError, // 409
-  NotFoundError, // 404
-} = require('../utils/utils');
+const { NotFoundError } = require('../utils/Errors/NotFoundError');
+const { DataChangeError } = require('../utils/Errors/DataChangeError');
+
 
 // eslint-disable-next-line consistent-return
 // const cardVerification = async (req, res) => {

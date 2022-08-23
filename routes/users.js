@@ -1,26 +1,27 @@
 const router = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
+
+const { validateURL } = require('../utils/utils');
 const {
-  getUsersAll,
   getUser,
+  getUsersAll,
   getUserById,
   createUser,
   updateProfile,
-  updateAvatar,
+  updateAvatar
 } = require('../controllers/usersController');
-const { validateURL } = require('../utils/utils');
 
 router.get('/me', getUser);
-// GET /users — возвращает всех пользователей
+// get /users — возвращает всех пользователей
 router.get('/', getUsersAll);
 
-// GET /users/:userId - возвращает пользователя по _id
-router.get('/:userId', getUserById);
+// get /users/:userid - возвращает пользователя по _id
+router.get('/:userid', getUserById);
 
-// POST /users — создаёт пользователя
+// post /users — создаёт пользователя
 router.post('/', createUser);
 
-// PATCH /users/me — обновляет профиль
+// patch /users/me — обновляет профиль
 router.patch('/me', celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30),
@@ -28,7 +29,7 @@ router.patch('/me', celebrate({
   }),
 }), updateProfile);
 
-// PATCH /users/me/avatar — обновляет аватар
+// patch /users/me/avatar — обновляет аватар
 router.patch('/avatar', celebrate({
   body: Joi.object().keys({
     avatar: Joi.string().custom(validateURL),

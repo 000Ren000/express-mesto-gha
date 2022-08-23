@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const { TokenError } = require('../utils/utils');
+const { TokenError } = require('../utils/Errors/TokenError');
 // eslint-disable-next-line import/order
 const secret = require('config').get('jwtSecret');
 

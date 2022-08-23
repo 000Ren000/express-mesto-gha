@@ -4,8 +4,9 @@ const { SAL_ROUND } = require('../config');
 const {
   createJWT,
   checkValidation,
-  NotFoundError, TokenError, // 404
 } = require('../utils/utils');
+const { NotFoundError } = require('../utils/Errors/NotFoundError');
+const { TokenError } = require('../utils/Errors/TokenError');
 
 module.exports.getUsersAll = async (req, res, next) => {
   try {

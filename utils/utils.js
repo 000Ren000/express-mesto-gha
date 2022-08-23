@@ -1,51 +1,18 @@
-// eslint-disable-next-line max-classes-per-file
 const jwt = require('jsonwebtoken');
 const config = require('config');
-const { Error } = require('mongoose');
 const validator = require('validator');
+const DataChangeError = require('./Errors/DataChangeError');
+const ErrorCode = require('./Errors/ErrorCode');
+const NotFoundError = require('./Errors/NotFoundError');
+const ServerError = require('./Errors/ServerError');
 
-class ErrorCode extends Error {
-  constructor(message) {
-    super(message);
-    this.statusCode = 400;
-  }
-}
-
-class TokenError extends Error {
-  constructor(message) {
-    super(message);
-    this.statusCode = 401;
-  }
-}
-
-class NotFoundError extends Error {
-  constructor(message) {
-    super(message);
-    this.statusCode = 404;
-  }
-}
-
-class DataChangeError extends Error {
-  constructor(message) {
-    super(message);
-    this.statusCode = 409;
-  }
-}
-
-class SERVER_ERROR_500 extends Error {
-  constructor(message) {
-    super(message);
-    this.statusCode = 500;
-  }
-}
-
-module.exports = {
-  ErrorCode,
-  TokenError,
-  NotFoundError,
-  SERVER_ERROR_500,
-  DataChangeError,
-};
+// module.exports = {
+//   ErrorCode,
+//   TokenError,
+//   NotFoundError,
+//   ServerError,
+//   DataChangeError,
+// };
 
 module.exports.createJWT = (_id) => {
   const token = jwt.sign(
@@ -83,6 +50,6 @@ module.exports.sendErrorMessage = (err, res) => {
       .send({ message: 'Не правильно введены данные' });
   }
   return res
-    .status(SERVER_ERROR_500)
+    .status(ServerError)
     .send({ message: 'Внутренняя ошибка сервера' });
 };
