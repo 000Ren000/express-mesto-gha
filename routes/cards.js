@@ -8,16 +8,21 @@ const {
   dislikeCard,
 } = require('../controllers/cardController');
 
-// Маршруты и запросы
-
+// const validateURL = (value) => {
+//   // eslint-disable-next-line no-undef
+//   if (!validator.isURL(value, { require_protocol: true })) {
+//     throw new ErrorCode('Неправильный формат ссылки');
+//   }
+//   return value;
+// };
 // GET /cards — возвращает все карточки
 router.get('/', getCardAll);
 
 // POST /cards — создаёт карточку
 router.post('/', celebrate({
   body: Joi.object().keys({
-    name: Joi.string().min(1).max(30).required(),
-    link: Joi.string().min(1).max(30).required(),
+    name: Joi.string().min(2).max(30).required(),
+    link: Joi.string(),
   }),
 }), createCard);
 

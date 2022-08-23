@@ -13,9 +13,7 @@ module.exports.jwtVerify = (req, res, next) => {
     if (!req.headers.authorization) {
       throw new TokenError('Не правильно переданы данные');
     }
-    const token = req.headers.authorization
-      .split(' ')[1] || 'ggg';
-    // eslint-disable-next-line consistent-return
+    const token = req.headers.authorization.replace('Bearer ', '');
     jwt.verify(token, secret, (err, payload) => {
       if (err) {
         throw new TokenError('Не правильно переданы данные');
