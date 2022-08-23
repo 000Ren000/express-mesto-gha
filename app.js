@@ -7,6 +7,7 @@ const cardRout = require('./routes/cards');
 const userRout = require('./routes/users');
 const { login, createUser } = require('./controllers/usersController');
 const { jwtVerify } = require('./middlewares/auth');
+const { validateURL } = require('./utils/utils');
 
 const PORT = config.get('port') || 3000;
 const { BASE_PATH } = process.env;
@@ -24,16 +25,15 @@ app.post('/signin', celebrate({
 }), login);
 app.post('/signup', celebrate({
   body: Joi.object().keys({
-    email: Joi.string().required().min(2).max(30),
-    password: Joi.string().required().min(1).max(30),
+    email: Joi.string().required().email(),
+    password: Joi.string().required(),
+    name: Joi.string().max(30),
+    about: Joi.string().max(30),
+    avatar: Joi.string().custom(validateURL),
   }),
 }), createUser);
 
-app.use(celebrate({
-  headers: Joi.object().keys({
-    authorization: Joi.string().required(),
-  }).unknown(),
-}), jwtVerify);
+app.use(jwtVerify);
 app.use('/users', userRout);
 app.use('/cards', cardRout);
 

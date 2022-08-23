@@ -50,8 +50,7 @@ module.exports.deleteCard = async (req, res, next) => {
     }
     await desiredCard.remove();
     res.status(200).json({
-      message: 'Карточка удалена!', desiredCard, // await Card.deleteOne({ _id: cardId });
-
+      message: 'Карточка удалена!', desiredCard,
     });
   } catch (err) {
     next(err);
