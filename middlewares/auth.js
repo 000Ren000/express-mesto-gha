@@ -3,11 +3,6 @@ const { TokenError } = require('../utils/utils');
 // eslint-disable-next-line import/order
 const secret = require('config').get('jwtSecret');
 
-// const errorMessage = (res) => {
-//   res.status(TokenError)
-//     .json({ message: 'Не правильно введены данные' });
-// };
-// eslint-disable-next-line consistent-return
 module.exports.jwtVerify = (req, res, next) => {
   try {
     if (!req.headers.authorization) {

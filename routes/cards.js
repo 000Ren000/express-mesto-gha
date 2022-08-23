@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const validator = require('validator');
 const { celebrate, Joi } = require('celebrate');
 const {
   getCardAll,
@@ -7,14 +8,14 @@ const {
   likeCard,
   dislikeCard,
 } = require('../controllers/cardController');
+const { ErrorCode } = require('../utils/utils');
 
-// const validateURL = (value) => {
-//   // eslint-disable-next-line no-undef
-//   if (!validator.isURL(value, { require_protocol: true })) {
-//     throw new ErrorCode('Неправильный формат ссылки');
-//   }
-//   return value;
-// };
+const validateURL = (value) => {
+  if (!validator.isURL(value, { require_protocol: true })) {
+    throw new ErrorCode('Неправильный формат ссылки');
+  }
+  return value;
+};
 // GET /cards — возвращает все карточки
 router.get('/', getCardAll);
 
@@ -22,7 +23,7 @@ router.get('/', getCardAll);
 router.post('/', celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30).required(),
-    link: Joi.string(),
+    link: Joi.string().custom(validateURL),
   }),
 }), createCard);
 
