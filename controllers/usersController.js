@@ -7,6 +7,15 @@ const {
   NotFoundError, TokenError, // 404
 } = require('../utils/utils');
 
+module.exports.getUsersAll = async (req, res, next) => {
+  try {
+    const user = await User.find({});
+    res.send(user);
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports.getUser = async (req, res, next) => {
   const { _id } = req.user;
   try {

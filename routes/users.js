@@ -8,7 +8,7 @@ const {
 } = require('../controllers/usersController');
 
 // GET /users — возвращает всех пользователей
-// router.get('/', getUsersAll);
+router.get('/', getUsersAll);
 
 // GET /users/:userId - возвращает пользователя по _id
 router.get('/:userId', getUser);
