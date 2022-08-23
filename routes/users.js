@@ -2,16 +2,19 @@ const router = require('express').Router();
 const {
   getUsersAll,
   getUser,
+  getUserById,
   createUser,
   updateProfile,
   updateAvatar,
 } = require('../controllers/usersController');
 
-// GET /users — возвращает всех пользователей
-router.get('/', getUsersAll);
+router.get('/me', getUser);
 
 // GET /users/:userId - возвращает пользователя по _id
-router.get('/:userId', getUser);
+router.get('/:userId', getUserById);
+
+// GET /users — возвращает всех пользователей
+router.get('/', getUsersAll);
 
 // POST /users — создаёт пользователя
 router.post('/', createUser);
