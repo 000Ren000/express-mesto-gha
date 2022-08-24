@@ -34,7 +34,7 @@ router.patch('/me', celebrate({
 }), updateProfile);
 
 // patch /users/me/avatar — обновляет аватар
-router.patch('/avatar', celebrate({
+router.patch('/me/avatar', celebrate({
   body: Joi.object().keys({
     avatar: Joi.string().custom(validateURL),
   }),
