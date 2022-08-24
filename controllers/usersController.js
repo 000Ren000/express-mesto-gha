@@ -62,7 +62,7 @@ module.exports.createUser = async (req, res, next) => {
     });
   } catch (err) {
     if (err.code === 11000) {
-      next(new DataChangeError('Не правильно переданы данные'));
+      next(new DataChangeError('Пользователь с таким Email уже существует'));
     } else if (err.name === 'ValidationError') {
       next(new ErrorCode('Не правильно переданы данные'));
     } else next(err);
