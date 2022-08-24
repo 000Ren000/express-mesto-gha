@@ -8,6 +8,7 @@ const userRout = require('./routes/users');
 const { login, createUser } = require('./controllers/usersController');
 const { jwtVerify } = require('./middlewares/auth');
 const { validateURL } = require('./utils/utils');
+const { NotFoundError } = require('./utils/Errors/NotFoundError');
 
 const PORT = config.get('port') || 3000;
 const { BASE_PATH } = process.env;
@@ -36,6 +37,10 @@ app.post('/signup', celebrate({
 app.use(jwtVerify);
 app.use('/users', userRout);
 app.use('/cards', cardRout);
+
+app.use((req, res, next) => {
+  next(new NotFoundError('Маршрут не найден'));
+});
 
 app.use(errors());
 
