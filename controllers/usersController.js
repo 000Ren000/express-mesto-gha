@@ -96,10 +96,10 @@ module.exports.login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email }).select('+password');
-    if (!user) throw new TokenError('Не правильно переданы данные');
+    if (!user) throw new TokenError('Неправильный логин или пароль');
     if (bcrypt.compareSync(password.toString(), user.password.toString())) {
       res.status(201).json({ jwt: createJWT(user._id) });
-    } else throw new TokenError('Не правильно переданы данные');
+    } else throw new TokenError('Неправильный логин или пароль');
   } catch (err) {
     next(err);
   }
