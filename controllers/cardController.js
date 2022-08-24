@@ -1,6 +1,5 @@
 const Card = require('../models/card');
 const { NotFoundError } = require('../utils/Errors/NotFoundError');
-const { DataChangeError } = require('../utils/Errors/DataChangeError');
 const { ErrorCode } = require('../utils/Errors/ErrorCode');
 const { AccessError } = require('../utils/Errors/AccessError');
 
