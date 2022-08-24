@@ -1,7 +1,6 @@
 const Card = require('../models/card');
 const { NotFoundError } = require('../utils/Errors/NotFoundError');
 const { DataChangeError } = require('../utils/Errors/DataChangeError');
-const { checkValidation } = require('../utils/utils');
 const { ErrorCode } = require('../utils/Errors/ErrorCode');
 
 const cardVerification = async (desiredCard, next) => {
