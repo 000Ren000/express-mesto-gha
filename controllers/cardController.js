@@ -9,8 +9,9 @@ const { DataChangeError } = require('../utils/Errors/DataChangeError');
 //     return res.status(404).json({ message: 'Карточка не найдена' });
 //   }
 
-const cardVerification = async (req, next) => {
-  if (!Card.exists({ _id: req.params.cardId })) {
+const cardVerification = async (desiredCard, next) => {
+  // if (!Card.exists({ _id: req.params.cardId })) {
+  if (!desiredCard) {
     next(new NotFoundError('Карточка не найдена'));
   }
 };
@@ -40,11 +41,11 @@ module.exports.createCard = async (req, res, next) => {
 // eslint-disable-next-line consistent-return
 module.exports.deleteCard = async (req, res, next) => {
   try {
-    cardVerification(req, next);
     const userId = req.user._id;
     const { cardId } = req.params;
     // eslint-disable-next-line consistent-return
     const desiredCard = await Card.findById(cardId);
+    cardVerification(desiredCard, next);
     if (desiredCard.owner.toString() !== userId) {
       throw new DataChangeError('Нет прав на удоление');
     }
@@ -59,14 +60,14 @@ module.exports.deleteCard = async (req, res, next) => {
 
 module.exports.likeCard = async (req, res, next) => {
   try {
-    cardVerification(req, next);
     // eslint-disable-next-line max-len
     const newCard = await Card.findByIdAndUpdate(
       req.params.cardId,
       { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
       { new: true },
     );
-    await res.send(newCard);
+    cardVerification(newCard, next);
+    res.send(newCard);
   } catch (err) {
     next(err);
   }
@@ -74,13 +75,15 @@ module.exports.likeCard = async (req, res, next) => {
 
 module.exports.dislikeCard = async (req, res, next) => {
   try {
-    cardVerification(req, next);
     const newCard = await Card.findByIdAndUpdate(
       req.params.cardId,
       { $pull: { likes: req.user._id } },
       { new: true },
     );
-    await res.send(newCard);
+    if (!newCard) {
+      throw new NotFoundError('Карточка не найдена');
+    }
+    res.send(newCard);
   } catch (err) {
     next(err);
   }
