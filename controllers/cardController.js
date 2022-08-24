@@ -2,6 +2,7 @@ const Card = require('../models/card');
 const { NotFoundError } = require('../utils/Errors/NotFoundError');
 const { DataChangeError } = require('../utils/Errors/DataChangeError');
 const { ErrorCode } = require('../utils/Errors/ErrorCode');
+const { AccessError } = require('../utils/Errors/AccessError');
 
 const cardVerification = async (desiredCard, next) => {
   // if (!Card.exists({ _id: req.params.cardId })) {
@@ -43,7 +44,7 @@ module.exports.deleteCard = async (req, res, next) => {
     const desiredCard = await Card.findById(cardId);
     cardVerification(desiredCard, next);
     if (desiredCard.owner.toString() !== userId) {
-      throw new DataChangeError('Нет прав на удоление');
+      throw new AccessError('Нет прав на удоление');
     }
     await desiredCard.remove();
     res.status(200).json({
