@@ -22,7 +22,7 @@ module.exports.validateURL = (value) => {
 };
 module.exports.checkValidation = (err, next) => {
   if (err.name === 'CastError') {
-    throw new NotFoundError('Запрашиваемые данные не найдены');
+    throw new ErrorCode('Запрашиваемые данные не найдены');
   } else if (err.code === 11000) {
     next(new DataChangeError('Не правильно переданы данные'));
   } else if (err.name === 'ValidationError') {

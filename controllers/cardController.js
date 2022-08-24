@@ -1,6 +1,7 @@
 const Card = require('../models/card');
 const { NotFoundError } = require('../utils/Errors/NotFoundError');
 const { DataChangeError } = require('../utils/Errors/DataChangeError');
+const { checkValidation } = require('../utils/utils');
 
 const cardVerification = async (desiredCard, next) => {
   // if (!Card.exists({ _id: req.params.cardId })) {
@@ -26,7 +27,7 @@ module.exports.createCard = async (req, res, next) => {
     const newCard = await Card.create({ name, link, owner: req.user._id });
     res.status(201).send(newCard);
   } catch (err) {
-    next(err);
+    checkValidation(err, next);
   }
 };
 
