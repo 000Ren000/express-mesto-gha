@@ -7,6 +7,7 @@ const {
 const { NotFoundError } = require('../utils/Errors/NotFoundError');
 const { TokenError } = require('../utils/Errors/TokenError');
 const { DataChangeError } = require('../utils/Errors/DataChangeError');
+const { ErrorCode } = require('../utils/Errors/ErrorCode');
 
 module.exports.getUsersAll = async (req, res, next) => {
   try {
@@ -62,9 +63,9 @@ module.exports.createUser = async (req, res, next) => {
   } catch (err) {
     if (err.code === 11000) {
       next(new DataChangeError('Не правильно переданы данные'));
-    } else {
-      next(err);
-    }
+    } else if (err.name === 'ValidationError') {
+      next(new ErrorCode('Не правильно переданы данные'));
+    } else next(err);
   }
 };
 
@@ -100,6 +101,6 @@ module.exports.login = async (req, res, next) => {
       res.status(201).json({ jwt: createJWT(user._id) });
     } else throw new TokenError('Не правильно переданы данные');
   } catch (err) {
-    checkValidation(err, next);
+    next(err);
   }
 };

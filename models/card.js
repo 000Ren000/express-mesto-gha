@@ -8,15 +8,18 @@ const cardSchema = mongoose.Schema({
     maxLength: 30,
     require,
   },
-  link: { type: String, require },
-  owner: { ref: 'user', type: mongoose.Types.ObjectId, require },
-  likes: [{
+  link: {
     type: String,
     validate: {
       validator(v) {
         return validator.isUrl(v);
       },
     },
+    require: true,
+  },
+  owner: { ref: 'user', type: mongoose.Types.ObjectId, require },
+  likes: [{
+    type: String,
     ref: 'user',
     default: [],
   }],
