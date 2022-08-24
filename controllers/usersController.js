@@ -98,7 +98,7 @@ module.exports.login = async (req, res, next) => {
     const user = await User.findOne({ email }).select('+password');
     if (!user) throw new TokenError('Неправильный логин или пароль');
     if (bcrypt.compareSync(password.toString(), user.password.toString())) {
-      res.status(201).json({ jwt: createJWT(user._id) });
+      res.status(200).json({ jwt: createJWT(user._id) });
     } else throw new TokenError('Неправильный логин или пароль');
   } catch (err) {
     next(err);
