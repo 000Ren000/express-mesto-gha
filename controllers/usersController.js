@@ -2,11 +2,11 @@ const bcrypt = require('bcrypt');
 const User = require('../models/user');
 const { SAL_ROUND } = require('../config');
 const {
-  createJWT,
-  checkValidation,
+  createJWT, checkValidation,
 } = require('../utils/utils');
 const { NotFoundError } = require('../utils/Errors/NotFoundError');
 const { TokenError } = require('../utils/Errors/TokenError');
+const { DataChangeError } = require('../utils/Errors/DataChangeError');
 
 module.exports.getUsersAll = async (req, res, next) => {
   try {
@@ -45,9 +45,13 @@ module.exports.getUser = async (req, res, next) => {
 
 module.exports.createUser = async (req, res, next) => {
   try {
-    const { email } = req.body;
+    const {
+      email, name, about, avatar,
+    } = req.body;
     const password = await bcrypt.hash(req.body.password.toString(), SAL_ROUND);
-    const newUser = await User.create({ email, password });
+    const newUser = await User.create({
+      email, password, name, about, avatar,
+    });
     res.status(201).send({
       _id: newUser._id,
       about: newUser.about,
@@ -56,7 +60,11 @@ module.exports.createUser = async (req, res, next) => {
       email: newUser.email,
     });
   } catch (err) {
-    checkValidation(err, next);
+    if (err.code === 11000) {
+      next(new DataChangeError('Не правильно переданы данные'));
+    } else {
+      next(err);
+    }
   }
 };
 
