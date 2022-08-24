@@ -6,14 +6,6 @@ const ErrorCode = require('./Errors/ErrorCode');
 const NotFoundError = require('./Errors/NotFoundError');
 const ServerError = require('./Errors/ServerError');
 
-// module.exports = {
-//   ErrorCode,
-//   TokenError,
-//   NotFoundError,
-//   ServerError,
-//   DataChangeError,
-// };
-
 module.exports.createJWT = (_id) => {
   const token = jwt.sign(
     { _id },

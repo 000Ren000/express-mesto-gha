@@ -18,6 +18,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     validate: {
       validator(v) {
+        // eslint-disable-next-line
         return /[-a-zA-Z0-9@:%_\+.~#?&\/=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&\/=]*)?/gi.test(v);
       },
       message: (props) => `${props.value} Не правильно указаны данные`,
