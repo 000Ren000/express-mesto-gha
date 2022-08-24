@@ -16,7 +16,11 @@ router.get('/me', getUser);
 router.get('/', getUsersAll);
 
 // get /users/:userid - возвращает пользователя по _id
-router.get('/:userid', getUserById);
+router.get('/:userId', celebrate({
+  body: Joi.object().keys({
+    userId: Joi.string().length(24).hex().required(),
+  }),
+}), getUserById);
 
 // post /users — создаёт пользователя
 router.post('/', createUser);
