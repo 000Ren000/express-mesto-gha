@@ -61,5 +61,5 @@ app.use((err, req, res, next) => {
 
 app.listen(PORT, () => {
   // eslint-disable-next-line no-console
-  console.log('Ссылка на сервер, временно не работает', BASE_PATH);
+  console.log('Ссылка на сервер', BASE_PATH);
 });
