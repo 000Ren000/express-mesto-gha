@@ -5,6 +5,7 @@ const config = require('config');
 const { errors, celebrate, Joi } = require('celebrate');
 const cardRout = require('./routes/cards');
 const userRout = require('./routes/users');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
 const { login, createUser } = require('./controllers/usersController');
 const { jwtVerify } = require('./middlewares/auth');
 const { validateURL } = require('./utils/utils');
@@ -18,6 +19,9 @@ mongoose.connect('mongodb://localhost:27017/mestodb');
 
 app.use(express.json({ extended: true }));
 app.use(bodyParser.json());
+
+app.use(requestLogger); // подключаем логгер запросов
+
 app.post('/signin', celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
@@ -42,6 +46,7 @@ app.use((req, res, next) => {
   next(new NotFoundError('Маршрут не найден'));
 });
 
+app.use(errorLogger); // подключаем логгер ошибок
 app.use(errors());
 
 // eslint-disable-next-line no-unused-vars
