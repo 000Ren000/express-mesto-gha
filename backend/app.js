@@ -10,6 +10,11 @@ const { login, createUser } = require('./controllers/usersController');
 const { jwtVerify } = require('./middlewares/auth');
 const { validateURL } = require('./utils/utils');
 const { NotFoundError } = require('./utils/Errors/NotFoundError');
+const bcrypt = require('bcrypt');
+const { SAL_ROUND } = require('./config');
+const User = require('./models/user');
+const { DataChangeError } = require('./utils/Errors/DataChangeError');
+const { ErrorCode } = require('./utils/Errors/ErrorCode');
 
 const PORT = config.get('port') || 3000;
 const { BASE_PATH } = process.env;
@@ -48,6 +53,21 @@ app.use((req, res, next) => {
 
 app.use(errorLogger); // подключаем логгер ошибок
 app.use(errors());
+
+
+const crUser = async () => {
+  try {
+    const password = await bcrypt.hash('111', SAL_ROUND);
+    const newUser = await User.create({
+      email: 'a@ya.ru',
+      password
+    });
+    console.log(newUser);
+  } catch (err) {
+    console.log(err);
+  }
+}
+crUser();
 
 // eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => {
