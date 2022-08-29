@@ -22,7 +22,11 @@ const { BASE_PATH } = process.env;
 const app = express();
 
 const corsOptions = {
-  origin: 'https://mesto.antonren.ru',
+  origin: [
+    'https://mesto.antonren.ru',
+    'http://mesto.antonren.ru',
+    'http://localhost',
+  ],
   optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 }
 
