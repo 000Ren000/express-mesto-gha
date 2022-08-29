@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const config = require('config');
+const cors = require('cors');
 const { errors, celebrate, Joi } = require('celebrate');
 const cardRout = require('./routes/cards');
 const userRout = require('./routes/users');
@@ -20,12 +21,18 @@ const PORT = config.get('port') || 3000;
 const { BASE_PATH } = process.env;
 const app = express();
 
+const corsOptions = {
+  origin: 'https://mesto.antonren.ru',
+  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+}
+
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
 
 app.use(express.json({ extended: true }));
 app.use(bodyParser.json());
-
 app.use(requestLogger); // подключаем логгер запросов
+app.use(cors(corsOptions));
+
 
 app.post('/signin', celebrate({
   body: Joi.object().keys({
