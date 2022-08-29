@@ -22,7 +22,7 @@ const { BASE_PATH } = process.env;
 const app = express();
 
 const corsOptions = {
-  origin: 'https://mesto.antonren.ru, http://176.119.19.78, http://mesto.antonren.ru',
+  origin: 'https://mesto.antonren.ru',
   optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 }
 
@@ -32,6 +32,14 @@ app.use(express.json({ extended: true }));
 app.use(bodyParser.json());
 app.use(requestLogger); // подключаем логгер запросов
 app.use(cors(corsOptions));
+app.use(cors({
+  origin: 'http://mesto.antonren.ru',
+  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+}))
+app.use(cors({
+  origin: 'http://176.119.19.78',
+  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+}))
 
 
 app.post('/signin', celebrate({
