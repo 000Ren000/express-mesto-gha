@@ -55,20 +55,6 @@ app.use(errorLogger); // подключаем логгер ошибок
 app.use(errors());
 
 
-const crUser = async () => {
-  try {
-    const password = await bcrypt.hash('111', SAL_ROUND);
-    const newUser = await User.create({
-      email: 'a@ya.ru',
-      password
-    });
-    console.log(newUser);
-  } catch (err) {
-    console.log(err);
-  }
-}
-crUser();
-
 // eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => {
   // если у ошибки нет статуса, выставляем 500
